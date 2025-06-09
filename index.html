@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creative Content Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/portfolio.css">
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script src="assets/portfolio.js" defer></script>
+  <style>
+    #game-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    :root {
+      --primary-color: #0a0a0a;
+      --secondary-color: #6b7280;
+      --accent-color: #000;
+      --hover-color: #111827;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9f9f9;
+      color: var(--primary-color);
+    }
+
+    .animate-image {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .nav-item {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .nav-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background-color: var(--accent-color);
+      transition: width 0.3s ease;
+    }
+
+    .nav-item:hover::after {
+      width: 100%;
+    }
+
+    .link-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+    }
+
+    .grid-item {
+      background-color: #fff;
+      font-size: 16px;
+      padding: 24px;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 10px;
+    }
+
+    .grid-item:hover {
+      box-shadow: rgba(0,0,0,0.1) 0 2px 4px;
+    }
+
+    .social-link {
+      transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+      transform: translateY(-3px);
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0a0a0a',
+            secondary: '#6b7280',
+            accent: '#000',
+            hover: '#111827'
+          },
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Three.js container -->
+  <div id="game-container"></div>
+
+  <!-- Main Content -->
+  <main class="flex items-center justify-center min-h-screen w-full">
+    <div class="fixed inset-0 backdrop-blur-sm bg-white/90 -z-10"></div>
+    <div class="max-w-4xl text-center px-4 z-10">
+      <a href="mailto:andrewsflike@gmail.com" class="font-display text-3xl mb-8 block">andrew like</a>
+      <div class="link-grid mx-auto">
+        <a href="branding.html" class="grid-item">branding</a>
+        <a href="retail.html" class="grid-item">retail</a>
+        <a href="media.html" class="grid-item">media</a>
+      </div>
+      <div class="flex justify-center space-x-6 mt-20">
+        <a href="http://www.behance.net/andrewlike" class="social-link">
+          <i class="fab fa-behance text-xl"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/andrewsflike/" class="social-link">
+          <i class="fab fa-linkedin-in text-xl"></i>
+        </a>
+        <a href="http://www.instagram.com/rxxrdesign" class="social-link">
+          <i class="fab fa-instagram text-xl"></i>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Portfolio section -->
+  <section class="portfolio-container">
+    <model-viewer src="assets/3d/placeholder.gltf" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate class="portfolio-media"></model-viewer>
+    <video controls class="portfolio-media">
+      <source src="assets/videos/sample.mp4" type="video/mp4">
+    </video>
+    <audio controls class="portfolio-media">
+      <source src="assets/audio/sample.mp3" type="audio/mpeg">
+    </audio>
+    <a class="download-link" href="assets/downloads/sample.pdf" download>Download Portfolio PDF</a>
+  </section>
+
+  <script>
+    const container = document.getElementById('game-container');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+
+    let currentGeom = 0;
+    const geometries = [
+      new THREE.TorusKnotGeometry(0.8, 0.2, 128, 16, 2, 3),
+      new THREE.OctahedronGeometry(0.9, 0),
+      new THREE.ConeGeometry(0.8, 1.3, 16, 1, true),
+      new THREE.CylinderGeometry(0.3, 0.8, 1.3, 16, 1, true),
+      new THREE.DodecahedronGeometry(0.8, 0),
+      new THREE.TorusKnotGeometry(0.5, 0.15, 64, 8, 3, 4),
+      new THREE.BoxGeometry(1.0, 1.0, 1.0),
+      new THREE.SphereGeometry(0.5, 16, 16)
+    ];
+
+    let geometry = geometries[currentGeom];
+    const material = new THREE.MeshPhongMaterial({
+      emissive: 0x111111,
+      specular: 0xffffff,
+      shininess: 60,
+      transparent: true,
+      opacity: 0.6
+    });
+    const torusKnot = new THREE.Mesh(geometry, material);
+    scene.add(torusKnot);
+
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(1, 1, 1);
+    scene.add(directionalLight);
+
+    camera.position.z = 5;
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    let hue = 0;
+    const color = new THREE.Color();
+    let autoMorphEnabled = true;
+    let colorCycleEnabled = false;
+
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let velocityX = 0;
+    let velocityY = 0;
+    const posStep = 1.5;
+    const lerpFactor = 0.1;
+    const friction = 0.98;
+    const bounceFactor = -0.7;
+
+    function getBoundaries() {
+      const distance = camera.position.z - torusKnot.position.z;
+      const aspect = window.innerWidth / window.innerHeight;
+      const vFov = camera.fov * Math.PI / 180;
+      const visibleHeight = 2 * Math.tan(vFov / 2) * distance;
+      const visibleWidth = visibleHeight * aspect;
+
+      return {
+        left: -visibleWidth / 2,
+        right: visibleWidth / 2,
+        top: visibleHeight / 2,
+        bottom: -visibleHeight / 2
+      };
+    }
+
+    const colorPresets = [
+      0xff0000,
+      0x00ff00,
+      0x0000ff,
+      0xffff00,
+      0xff00ff,
+      0x00ffff,
+      0xff7700,
+      0x7700ff,
+      0x0077ff,
+      0xffffff
+    ];
+
+    document.addEventListener('keydown', event => {
+      if (/^[a-zA-Z]$/.test(event.key)) {
+        autoMorphEnabled = false;
+        const geomIndex = (event.key.toLowerCase().charCodeAt(0) - 97) % geometries.length;
+        currentGeom = geomIndex;
+        torusKnot.geometry.dispose();
+        torusKnot.geometry = geometries[currentGeom];
+      }
+
+      switch (event.key) {
+        case 'ArrowUp':
+          targetY += posStep;
+          velocityY += posStep * 0.5;
+          break;
+        case 'ArrowDown':
+          targetY -= posStep;
+          velocityY -= posStep * 0.5;
+          break;
+        case 'ArrowLeft':
+          targetX -= posStep;
+          velocityX -= posStep * 0.5;
+          break;
+        case 'ArrowRight':
+          targetX += posStep;
+          velocityX += posStep * 0.5;
+          break;
+        case '0':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '8':
+        case '9':
+          const num = parseInt(event.key);
+          color.setHex(colorPresets[num]);
+          material.color.copy(color);
+          colorCycleEnabled = false;
+          break;
+        case '1':
+          colorCycleEnabled = !colorCycleEnabled;
+          if (!colorCycleEnabled) {
+            color.setHex(0xff0000);
+            material.color.copy(color);
+          }
+          break;
+        case '7':
+          autoMorphEnabled = !autoMorphEnabled;
+          if (autoMorphEnabled) {
+            currentGeom = 0;
+          }
+          break;
+      }
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const bounds = getBoundaries();
+      const objectSize = 1.0;
+
+      currentX = THREE.MathUtils.lerp(currentX, targetX, lerpFactor) + velocityX;
+      currentY = THREE.MathUtils.lerp(currentY, targetY, lerpFactor) + velocityY;
+
+      if (currentX - objectSize / 2 < bounds.left) {
+        currentX = bounds.left + objectSize / 2;
+        velocityX *= bounceFactor;
+      } else if (currentX + objectSize / 2 > bounds.right) {
+        currentX = bounds.right - objectSize / 2;
+        velocityX *= bounceFactor;
+      }
+
+      if (currentY - objectSize / 2 < bounds.bottom) {
+        currentY = bounds.bottom + objectSize / 2;
+        velocityY *= bounceFactor;
+      } else if (currentY + objectSize / 2 > bounds.top) {
+        currentY = bounds.top - objectSize / 2;
+        velocityY *= bounceFactor;
+      }
+
+      velocityX *= friction;
+      velocityY *= friction;
+
+      torusKnot.position.set(currentX, currentY, 0);
+      targetX = currentX;
+      targetY = currentY;
+
+      torusKnot.rotation.x += 0.005;
+      torusKnot.rotation.y += 0.01;
+
+      if (autoMorphEnabled) {
+        const geomChangeSpeed = 0.0005;
+        currentGeom = (currentGeom + geomChangeSpeed) % geometries.length;
+
+        if (Date.now() % 5000 < 100) {
+          const geomIndex2 = (Math.floor(currentGeom) + 1) % geometries.length;
+          const newGeom = geometries[geomIndex2];
+          torusKnot.geometry.dispose();
+          torusKnot.geometry = newGeom;
+        }
+      }
+
+      if (colorCycleEnabled) {
+        hue = (hue + 0.005) % 1;
+        color.setHSL(hue, 0.8, 0.6);
+        material.color.copy(color);
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

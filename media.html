@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Media Portfolio</title>
+  <link rel="stylesheet" href="assets/portfolio.css">
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script src="assets/portfolio.js" defer></script>
+</head>
+<body>
+  <h1>Media</h1>
+  <div class="portfolio-container">
+    <model-viewer src="assets/3d/placeholder.gltf" ar ar-modes="webxr scene-viewer quick-look" camera-controls auto-rotate class="portfolio-media"></model-viewer>
+    <video controls class="portfolio-media">
+      <source src="assets/videos/sample.mp4" type="video/mp4">
+    </video>
+    <audio controls class="portfolio-media">
+      <source src="assets/audio/sample.mp3" type="audio/mpeg">
+    </audio>
+    <a class="download-link" href="assets/downloads/sample.pdf" download>Download PDF</a>
+  </div>
+  <p><a href="index.html">Back to home</a></p>
+</body>
+</html>

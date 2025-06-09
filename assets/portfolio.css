@@ -1,0 +1,17 @@
+/* Styles for portfolio interactive content */
+.portfolio-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.portfolio-media {
+  max-width: 100%;
+  margin: auto;
+}
+
+.download-link {
+  display: inline-block;
+  margin-top: 1rem;
+}
